@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package connPlayer;
+
+option go_package = "github.com/goggle-source/connPlayerLotProto/gen/go/connPlayer;connPlayer";
+
+service ConnPlayer {
+    rpc MaltingAllPlayers(MaltingAllPlayersRequest) returns (MaltingAllPlayersResponse);
+}
+
+message MaltingAllPlayersRequest {
+    string auction_id = 1;
+    string message = 2;
+}
+
+message MaltingAllPlayersResponse {
+    bool success = 1;
+}
+
