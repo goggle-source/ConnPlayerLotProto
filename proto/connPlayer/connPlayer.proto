@@ -6,6 +6,12 @@ option go_package = "github.com/goggle-source/connPlayerLotProto/gen/go/connPlay
 
 service ConnPlayer {
     rpc MaltingAllPlayers(MaltingAllPlayersRequest) returns (MaltingAllPlayersResponse);
+    rpc SendMessageUser(SendMessageUserRequest) returns (SendMessageUserResponse);
+}
+
+message MessageUser {
+    int32 place = 1;
+    string message = 2;
 }
 
 message MaltingAllPlayersRequest {
@@ -13,7 +19,11 @@ message MaltingAllPlayersRequest {
     string message = 2;
 }
 
-message MaltingAllPlayersResponse {
-    bool success = 1;
+message MaltingAllPlayersResponse {}
+
+message SendMessageUserRequest {
+    string auction_id = 1;
+    MessageUser message = 2;
 }
 
+message SendMessageUserResponse {}

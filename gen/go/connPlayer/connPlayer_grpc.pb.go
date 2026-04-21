@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	ConnPlayer_MaltingAllPlayers_FullMethodName = "/connPlayer.ConnPlayer/MaltingAllPlayers"
+	ConnPlayer_SendMessageUser_FullMethodName   = "/connPlayer.ConnPlayer/SendMessageUser"
 )
 
 // ConnPlayerClient is the client API for ConnPlayer service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ConnPlayerClient interface {
 	MaltingAllPlayers(ctx context.Context, in *MaltingAllPlayersRequest, opts ...grpc.CallOption) (*MaltingAllPlayersResponse, error)
+	SendMessageUser(ctx context.Context, in *SendMessageUserRequest, opts ...grpc.CallOption) (*SendMessageUserResponse, error)
 }
 
 type connPlayerClient struct {
@@ -47,11 +49,22 @@ func (c *connPlayerClient) MaltingAllPlayers(ctx context.Context, in *MaltingAll
 	return out, nil
 }
 
+func (c *connPlayerClient) SendMessageUser(ctx context.Context, in *SendMessageUserRequest, opts ...grpc.CallOption) (*SendMessageUserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SendMessageUserResponse)
+	err := c.cc.Invoke(ctx, ConnPlayer_SendMessageUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ConnPlayerServer is the server API for ConnPlayer service.
 // All implementations must embed UnimplementedConnPlayerServer
 // for forward compatibility.
 type ConnPlayerServer interface {
 	MaltingAllPlayers(context.Context, *MaltingAllPlayersRequest) (*MaltingAllPlayersResponse, error)
+	SendMessageUser(context.Context, *SendMessageUserRequest) (*SendMessageUserResponse, error)
 	mustEmbedUnimplementedConnPlayerServer()
 }
 
@@ -64,6 +77,9 @@ type UnimplementedConnPlayerServer struct{}
 
 func (UnimplementedConnPlayerServer) MaltingAllPlayers(context.Context, *MaltingAllPlayersRequest) (*MaltingAllPlayersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MaltingAllPlayers not implemented")
+}
+func (UnimplementedConnPlayerServer) SendMessageUser(context.Context, *SendMessageUserRequest) (*SendMessageUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendMessageUser not implemented")
 }
 func (UnimplementedConnPlayerServer) mustEmbedUnimplementedConnPlayerServer() {}
 func (UnimplementedConnPlayerServer) testEmbeddedByValue()                    {}
@@ -104,6 +120,24 @@ func _ConnPlayer_MaltingAllPlayers_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ConnPlayer_SendMessageUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendMessageUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConnPlayerServer).SendMessageUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConnPlayer_SendMessageUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConnPlayerServer).SendMessageUser(ctx, req.(*SendMessageUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ConnPlayer_ServiceDesc is the grpc.ServiceDesc for ConnPlayer service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +148,10 @@ var ConnPlayer_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "MaltingAllPlayers",
 			Handler:    _ConnPlayer_MaltingAllPlayers_Handler,
+		},
+		{
+			MethodName: "SendMessageUser",
+			Handler:    _ConnPlayer_SendMessageUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
